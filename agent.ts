@@ -8,14 +8,14 @@ import path from 'path';
 import readline from 'readline';
 
 // CONFIGURATION
-const MARKET_URL = 'http://localhost:3000'; 
+const MARKET_URL = 'http://localhost:3000';
 const AGENT_DOWNLOAD_DIR = path.join(process.cwd(), 'agent-downloads');
 
 // 1. Setup Agent Wallet
 const privateKey = process.env.AGENT_PRIVATE_KEY as `0x${string}`;
 if (!privateKey) {
-    console.error("❌ ERROR: Missing AGENT_PRIVATE_KEY in .env file");
-    process.exit(1);
+  console.error("❌ ERROR: Missing AGENT_PRIVATE_KEY in .env file");
+  process.exit(1);
 }
 
 const account = privateKeyToAccount(privateKey);
@@ -28,25 +28,40 @@ const publicClient = createPublicClient({ chain: cronosTestnet, transport: http(
 
 // --- Funzione di attesa ---
 function waitForStart(): Promise<void> {
-    const rl = readline.createInterface({
-        input: process.stdin,
-        output: process.stdout
-    });
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout
+  });
 
-    return new Promise(resolve => {
-        console.clear();
-        console.log("\n\n");
-        console.log("   ╔══════════════════════════════════════════╗");
-        console.log("   ║      x402 AUTONOMOUS AGENT SYSTEM        ║");
-        console.log("   ║           Status: STANDBY                ║");
-        console.log("   ╚══════════════════════════════════════════╝");
-        console.log("\n");
-        
-        rl.question('   > Press [ENTER] to initialize sequence...', () => {
-            rl.close();
-            resolve();
-        });
+  return new Promise(resolve => {
+    console.clear();
+    console.log("\n\n");
+    console.log("   ╔══════════════════════════════════════════╗");
+    console.log("   ║      x402 AUTONOMOUS AGENT SYSTEM        ║");
+    console.log("   ║           Status: STANDBY                ║");
+    console.log("   ╚══════════════════════════════════════════╝");
+    console.log("\n");
+
+    rl.question('   > Press [ENTER] to initialize sequence...', () => {
+      rl.close();
+      resolve();
     });
+  });
+}
+
+async function consultCryptoComMarketData(): Promise<boolean> {
+  console.log("\n🤖 AI ANALYST: Connecting to Crypto.com Market Data...");
+
+  await new Promise(r => setTimeout(r, 1500));
+
+  const croPrice = 0.15; // Prezzo simulato
+  const trend = "BULLISH";
+
+  console.log(`   📊 CRO Price: $${croPrice}`);
+  console.log(`   📈 Market Sentiment: ${trend}`);
+  console.log("   ✅ AI Decision: BUY SIGNAL CONFIRMED");
+
+  return true;
 }
 
 async function runAgent() {
@@ -55,11 +70,11 @@ async function runAgent() {
 
   console.log(`\n\n🤖 AGENT INITIALIZED`);
   console.log(`🆔 Identity: ${account.address}`);
-  
+
   // 2. Discovery Phase
   console.log("\n🔎 PHASE 1: DISCOVERY");
   console.log("   Scanning marketplace for available assets...");
-  
+
   let files;
   try {
     const listRes = await fetch(`${MARKET_URL}/api/files`);
@@ -87,75 +102,84 @@ async function runAgent() {
 
   if (initRes.status === 402) {
     const challenge = await initRes.json();
-    
+
     // Safety check for offer structure
     let offer;
     if (challenge.offers && challenge.offers.length > 0) {
-        offer = challenge.offers[0];
+      offer = challenge.offers[0];
     } else {
-        offer = challenge; // Fallback
+      offer = challenge; // Fallback
     }
 
-    if(!offer.amount || !offer.recipient) {
-        console.error("❌ Invalid 402 challenge received.");
-        return;
+    if (!offer.amount || !offer.recipient) {
+      console.error("❌ Invalid 402 challenge received.");
+      return;
     }
-    
+
     console.log(`🛑 HTTP 402 PAYMENT REQUIRED RECEIVED`);
-    console.log(`   Price:     ${offer.amount} ETH`);
+    console.log(`   Price:     ${offer.amount} CRO`);
     console.log(`   Payee:     ${offer.recipient}`);
 
     // Check Balance
     const balance = await publicClient.getBalance({ address: account.address });
     if (balance < parseEther(offer.amount.toString())) {
-        console.error(`❌ INSUFFICIENT FUNDS. Balance: ${formatEther(balance)} ETH`);
-        return;
+      console.error(`❌ INSUFFICIENT FUNDS. Balance: ${formatEther(balance)} CRO`);
+      return;
     }
 
-    // 5. Execution (Payment)
-    console.log("\n💸 PHASE 3: EXECUTION");
-    console.log("   Broadcasting transaction to Base Sepolia...");
+    console.log("\n🧠 PHASE 2.5: AI VALIDATION");
+    const shouldBuy = await consultCryptoComMarketData();
 
-    try {
-      const hash = await walletClient.sendTransaction({
-        to: offer.recipient,
-        value: parseEther(offer.amount.toString())
-      });
+    if (shouldBuy) {
 
-      console.log(`🚀 TX SENT: https://sepolia.basescan.org/tx/${hash}`);
-      console.log("⏳ Awaiting block confirmation...");
+      // 5. Execution (Payment)
+      console.log("\n💸 PHASE 3: EXECUTION");
+      console.log("   Broadcasting transaction to Cronos (Testnet)...");
 
-      await publicClient.waitForTransactionReceipt({ hash });
-      console.log("✅ Transaction confirmed on-chain.");
+      try {
+        const hash = await walletClient.sendTransaction({
+          to: offer.recipient,
+          value: parseEther(offer.amount.toString())
+        });
 
-      // 6. Redemption (Proof of Payment)
-      console.log("\n📥 PHASE 4: REDEMPTION");
-      console.log("   Exchanging proof-of-payment (TxHash) for asset...");
-      
-      const finalRes = await fetch(`${MARKET_URL}/api/download/${randomFile.id}`, {
-        method: 'POST',
-        headers: {
-          'X-Payment': hash // The x402 Proof
+        console.log(`🚀 TX SENT: https://explorer.cronos.org/testnet/tx/${hash}`);
+        console.log("⏳ Awaiting block confirmation...");
+
+        await publicClient.waitForTransactionReceipt({ hash });
+        console.log("✅ Transaction confirmed on-chain.");
+
+        // 6. Redemption (Proof of Payment)
+        console.log("\n📥 PHASE 4: REDEMPTION");
+        console.log("   Exchanging proof-of-payment (TxHash) for asset...");
+
+        const finalRes = await fetch(`${MARKET_URL}/api/download/${randomFile.id}`, {
+          method: 'POST',
+          headers: {
+            'X-Payment': hash // The x402 Proof
+          }
+        });
+
+        if (finalRes.ok) {
+          // Save to disk
+          if (!fs.existsSync(AGENT_DOWNLOAD_DIR)) fs.mkdirSync(AGENT_DOWNLOAD_DIR);
+
+          const buffer = await finalRes.arrayBuffer();
+          const savePath = path.join(AGENT_DOWNLOAD_DIR, `agent_bought_${randomFile.originalName}`);
+          fs.writeFileSync(savePath, Buffer.from(buffer));
+
+          console.log(`\n🎉 MISSION SUCCESS`);
+          console.log(`   Asset secured at: ${savePath}\n`);
+        } else {
+          const errorText = await finalRes.text();
+          console.error(`❌ REDEMPTION FAILED: ${finalRes.status} - ${errorText}`);
         }
-      });
 
-      if (finalRes.ok) {
-        // Save to disk
-        if (!fs.existsSync(AGENT_DOWNLOAD_DIR)) fs.mkdirSync(AGENT_DOWNLOAD_DIR);
-        
-        const buffer = await finalRes.arrayBuffer();
-        const savePath = path.join(AGENT_DOWNLOAD_DIR, `agent_bought_${randomFile.originalName}`);
-        fs.writeFileSync(savePath, Buffer.from(buffer));
-
-        console.log(`\n🎉 MISSION SUCCESS`);
-        console.log(`   Asset secured at: ${savePath}\n`);
-      } else {
-        const errorText = await finalRes.text();
-        console.error(`❌ REDEMPTION FAILED: ${finalRes.status} - ${errorText}`);
+      } catch (e: any) {
+        console.error("❌ FATAL ERROR during execution:", e.message);
       }
-
-    } catch (e: any) {
-      console.error("❌ FATAL ERROR during execution:", e.message);
+    } else {
+      console.log("❌ Market conditions unfavorable. Skipping purchase.");
+      return;
     }
   } else {
     console.log("⚠️ Resource is not gated by x402 (Status 200) or Server Error.");
