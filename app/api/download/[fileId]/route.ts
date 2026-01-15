@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createPublicClient, http, parseEther } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { cronosTestnet } from 'viem/chains';
 import fs from 'fs';
 import path from 'path';
 
-const client = createPublicClient({ chain: baseSepolia, transport: http() });
+const client = createPublicClient({ chain: cronosTestnet, transport: http() });
 const DB_PATH = path.join(process.cwd(), 'database.json');
 const UPLOAD_DIR = path.join(process.cwd(), 'private-uploads');
 

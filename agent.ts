@@ -2,7 +2,7 @@
 import 'dotenv/config';
 import { createWalletClient, createPublicClient, http, parseEther, formatEther } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
-import { baseSepolia } from 'viem/chains';
+import { cronosTestnet } from 'viem/chains';
 import fs from 'fs';
 import path from 'path';
 import readline from 'readline';
@@ -21,10 +21,10 @@ if (!privateKey) {
 const account = privateKeyToAccount(privateKey);
 const walletClient = createWalletClient({
   account,
-  chain: baseSepolia,
+  chain: cronosTestnet,
   transport: http()
 });
-const publicClient = createPublicClient({ chain: baseSepolia, transport: http() });
+const publicClient = createPublicClient({ chain: cronosTestnet, transport: http() });
 
 // --- Funzione di attesa ---
 function waitForStart(): Promise<void> {

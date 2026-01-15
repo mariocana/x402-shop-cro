@@ -81,8 +81,8 @@ export default function UploadPage() {
               <div className="relative group">
                 <DollarSign className="absolute left-3 top-3 text-zinc-500 group-focus-within:text-indigo-400 transition-colors" size={18} />
                 <input 
-                  type="number" step="0.0001"
-                  placeholder="Price (ETH)" 
+                  type="number" step="1"
+                  placeholder="Price (CRO)" 
                   value={price} 
                   onChange={e => setPrice(e.target.value)} 
                   className="w-full bg-zinc-950 border border-zinc-700 rounded-lg py-3 pl-10 pr-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all text-white placeholder-zinc-600"

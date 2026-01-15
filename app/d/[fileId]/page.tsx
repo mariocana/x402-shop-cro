@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, use } from 'react';
 import { createWalletClient, custom, parseEther } from 'viem';
-import { baseSepolia } from 'viem/chains'; 
+import { cronosTestnet } from 'viem/chains'; 
 import { Lock, Unlock, Download, Loader2, ExternalLink, FileText, User } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -56,7 +56,7 @@ export default function DownloadPage({ params }: { params: Promise<{ fileId: str
 
     try {
       const walletClient = createWalletClient({
-        chain: baseSepolia,
+        chain: cronosTestnet,
         transport: custom(window.ethereum)
       });
       const [account] = await walletClient.requestAddresses();
@@ -150,7 +150,7 @@ export default function DownloadPage({ params }: { params: Promise<{ fileId: str
             <div className="flex items-center justify-between">
                 <span className="text-zinc-500 text-sm">Price</span>
                 <span className="text-xl font-mono font-bold text-white">
-                    {fileDetails?.offers?.[0]?.amount || "..."} ETH
+                    {fileDetails?.offers?.[0]?.amount || "..."} CRO
                 </span>
             </div>
         </div>
@@ -174,12 +174,12 @@ export default function DownloadPage({ params }: { params: Promise<{ fileId: str
         {txHash && (
           <div className="animate-in fade-in slide-in-from-top-2">
             <a 
-              href={`https://sepolia.basescan.org/tx/${txHash}`} 
+              href={`https://explorer.cronos.org/testnet/tx/${txHash}`} 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex items-center justify-center gap-2 text-xs text-zinc-500 hover:text-white transition-colors"
             >
-              View on BaseScan <ExternalLink size={10} />
+              View on Cronos (Testnet) Chain Explorer <ExternalLink size={10} />
             </a>
           </div>
         )}
