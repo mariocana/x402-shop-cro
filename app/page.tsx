@@ -33,7 +33,7 @@ export default function Home() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
             x402 Shop
           </h1>
-          <p className="text-zinc-400 text-sm mt-1">Discover & Buy P2P Digital Assets</p>
+          <p className="text-zinc-400 text-sm mt-1">Discover & Buy P2P Digital Assets on Cronos!</p>
         </div>
         
         <Link href="/upload">
