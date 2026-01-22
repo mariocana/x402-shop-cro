@@ -37,7 +37,7 @@ export async function POST(
         offers: [{
             amount: fileData.price,
             recipient: fileData.sellerWallet,
-            currency: "ETH"
+            currency: "CRO"
         }]
       },
       { status: 402 }

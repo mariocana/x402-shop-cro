@@ -148,7 +148,7 @@ export default function DownloadPage({ params }: { params: Promise<{ fileId: str
 
             {/* Prezzo */}
             <div className="flex items-center justify-between">
-                <span className="text-zinc-500 text-sm">Price</span>
+                <span className="text-zinc-500 text-sm">Price (CRO)</span>
                 <span className="text-xl font-mono font-bold text-white">
                     {fileDetails?.offers?.[0]?.amount || "..."} CRO
                 </span>

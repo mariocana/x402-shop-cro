@@ -83,7 +83,7 @@ export default function Home() {
 
                 {/* Footer: Price & CTA */}
                 <div className="flex items-center justify-between mt-auto pt-4 border-t border-zinc-800/50">
-                  <span className="font-mono font-bold text-white text-lg">{file.price} <span className="text-xs text-zinc-500">ETH</span></span>
+                  <span className="font-mono font-bold text-white text-lg">{file.price} <span className="text-xs text-zinc-500">CRO</span></span>
                   <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                     <ArrowRight size={16} />
                   </div>
